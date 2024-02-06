@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .box{background-image: url("2.png");
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    background-repeat: no-repeat;
+    }
+    .box1{
+        width: 40%;
+        height: 250px;
+        margin-left: 15%;
+        margin-top: 6%;
+        
+       
+       
+    }
+    a{
+        text-decoration: none;
+        font-size: 60px;
+        color: black;
+    
+    }
+    
+    .box2{width: 40%;
+        height: 250px;
+        margin-left: 15%;
+        
+        
+
+    }
+    .box3{
+        width: 40%;
+        height: 100px;
+        margin-left: 15%;
+        
+    }
+    .bcakButton{
+        margin-top: 80px;
+            height: 44px;
+            width: 100%;
+            margin-left: 8%;
+            
+    }
+    
+    
+ 
+</style>
+<body>
+    <div class="box">
+    
+       <h1>五子棋游戏世界</h1>
+        
+        
+        <div class="box1"> 
+            <a href="添加房间.html" class="btn">进入游戏</a>
+        </div>
+        <div class="box2">
+            <a href="个人主页.html">个人主页</a>
+        </div>
+        <div class="box3">
+           <a href="查看排名.html">查看排名</a>
+        </div>
+        <button class="backButton" type="button">返回</button>
+
+
+
+    </div>
+    <script>
+        // 为返回按钮添加点击事件
+        document.getElementById('backButton').addEventListener('click', function() {
+          window.history.back();
+        });
+      </script>
+</body>
+</html>

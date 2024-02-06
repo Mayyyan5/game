@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box{
+            width: 80%;
+            height: 700px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.8);
+            display: flex;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            background-image: url("2.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .friend{
+            width: 20%;
+            height: 100px;
+        }
+        .btn{
+            width: 20%;
+            height: 100px;
+        }
+        .get{
+            width: 60%;
+            height: 500px;
+        }
+        .name{
+          font-size: 22px;
+        }
+        
+    </style>
+    
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <div class="box">
+       <form action="" class="get">
+        <label for="friendName" class="name">好友名称：</label>
+        <input id="friendName" class="friend">
+        <button onclick="addFriend()" class="btn">添加好友</button>
+       </form>
+      </div>
+      
+      <!-- 好友列表 -->
+      <ul id="friendList">
+      </ul>
+      
+      <!-- 好友请求列表 -->
+      <ul id="friendRequestList">
+      </ul>
+      
+      <script>
+        // 添加好友
+        function addFriend() {
+          var friendName = document.getElementById('friendName').value;
+      
+          // 发送POST请求到后台API
+          axios.post('/api/friends', { name: friendName })
+            .then(response => {
+              console.log(response.data);
+      
+              // 更新好友列表
+              var friendList = document.getElementById('friendList');
+              var friendItem = document.createElement('li');
+              friendItem.textContent = response.data.name;
+              friendList.appendChild(friendItem);
+            
+              // 清空输入框
+              document.getElementById('friendName').value = '';
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+      
+        // 接受好友请求
+        function acceptFriendRequest(requestId) {
+          // 发送POST请求到后台API
+          axios.post(`/api/friend-requests/${requestId}/accept`)
+            .then(response => {
+              console.log(response.data);
+      
+              // 更新好友请求列表
+              var friendRequestList = document.getElementById('friendRequestList');
+              var requestItem = document.getElementById(`request-${requestId}`);
+              friendRequestList.removeChild(requestItem);
+            
+              // 更新好友列表
+              var friendList = document.getElementById('friendList');
+              var friendItem = document.createElement('li');
+              friendItem.textContent = response.data.name;
+              friendList.appendChild(friendItem);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+        
+        // 初始化加载好友列表和好友请求列表
+        window.onload = function() {
+          axios.get('/api/friends')
+            .then(response => {
+              console.log(response.data);
+      
+              // 更新好友列表
+              var friendList = document.getElementById('friendList');
+              response.data.forEach(friend => {
+                var friendItem = document.createElement('li');
+                friendItem.textContent = friend.name + ' (等级: ' + friend.level + ')';
+                friendList.appendChild(friendItem);
+              });
+            })
+            .catch(error => {
+              console.error(error);
+            });
+      
+          axios.get('/api/friend-requests')
+            .then(response => {
+              console.log(response.data);
+      
+              // 更新好友请求列表
+              var friendRequestList = document.getElementById('friendRequestList');
+              response.data.forEach(request => {
+                var requestItem = document.createElement('li');
+                requestItem.id = `request-${request.id}`;
+                requestItem.textContent = `${request.sender} 请求添加您为好友`;
+                var acceptButton = document.createElement('button');
+                acceptButton.textContent = '接受';
+                acceptButton.onclick = function() {
+                  acceptFriendRequest(request.id);
+                };
+                requestItem.appendChild(acceptButton);
+                friendRequestList.appendChild(requestItem);
+              });
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        };
+      </script>
+  
+</body>
+</html>

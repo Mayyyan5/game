@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <style>
+     .container{
+        width: 50%;
+            height: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.8);
+            display: flex;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            background-image: url("2.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+    }
+    .btn{
+        height: 44px;
+            width: 100%;
+            margin-top: 40%;
+    }
+    .square {
+          border: 1px solid black;
+          box-sizing: border-box;
+    }
+    .newClass{
+        display: grid;
+          grid-template-columns: repeat(10, 1fr);
+          grid-template-rows: repeat(10, 1fr);
+          width: 400px;
+          height: 400px;
+          margin-top: 5%;
+          margin-left: 35%;
+    }
+    .my-div{
+        width: 100%;
+          height: 200px;
+          border: 1px solid black;
+          overflow-y: scroll;
+          padding: 10px;
+    }
+    .my-input{
+        width: 30%;
+          height: 40px;
+    }
+    .my-button{
+        width: 30%;
+          height: 40px;
+    }
+
+   </style>
+
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    //const passwordToken = localStorage.getItem('passwordToken');
+const smsToken = localStorage.getItem('smsToken');
+let selectedToken;
+let selectedLoginMethod
+if (passwordToken) {
+  selectedToken = passwordToken;
+  selectedLoginMethod = 'password';
+} else if (smsToken) {
+  selectedToken = smsToken;
+  selectedLoginMethod = 'sms';
+}
+
+
+
+  </script>
+    <div id="app" class="container">
+       
+        <button id="createRoomBtn" class="btn">创建房间</button>
+        
+        <button type="button" class="btn" id="backButton">返回</button>
+        
+    </div>
+    <canvas id="chessboard" width="500px" height="500px"></canvas>
+    <script>
+      // 为返回按钮添加点击事件
+      document.getElementById('backButton').addEventListener('click', function() {
+        window.history.back();
+      });
+    </script>
+   <script>
+    document.getElementById('createRoomBtn').addEventListener('click', function() {
+      const socket = new WebSocket('ws://47.109.84.129:8080/game/createRoom'); // 替换为您的后端服务器地址
+
+// 连接建立后的处理
+socket.addEventListener('open', (event) => {
+  console.log('WebSocket连接已建立');
+  const app = document.getElementById('app');
+  document.getElementById('app').innerHTML = '';
+  document.getElementById('app').className = '';
+    
+   
+    // 渲染棋盘
+    const canvas = document.getElementById('chessboard');
+const context = canvas.getContext('2d');
+
+let currentPlayer = "user1"; 
+
+// 绘制棋盘
+const boardSize = 500; 
+const gridSize = boardSize / 10; 
+canvas.width = boardSize;
+canvas.height = boardSize;
+
+context.strokeStyle = '#000'; 
+
+
+for (let i = 0; i <= 10; i++) {
+  context.beginPath();
+  context.moveTo(0, i * gridSize);
+  context.lineTo(boardSize, i * gridSize);
+  context.stroke();
+}
+
+// 绘制纵向网格线
+for (let j = 0; j <= 10; j++) {
+  context.beginPath();
+  context.moveTo(j * gridSize, 0);
+  context.lineTo(j * gridSize, boardSize);
+  context.stroke();
+}
+context.lineWidth = 4; 
+context.strokeRect(0, 0, boardSize, boardSize);
+const startButton = document.createElement('button');
+startButton.textContent = '点击开始游戏';
+const container = document.getElementById('app');
+container.appendChild(startButton);
+startButton.id = 'startGameButton';
+startGameButton.addEventListener('click', function() {
+    
+    axios.get('http://47.109.84.129:8080/game/ready', {
+        params: {
+            
+            
+        }
+    })
+    .then(function (response) {
+      console.log(response.message);
+      canvas.addEventListener('click', function(event) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const row = Math.floor(y / gridSize);
+      const column = Math.floor(x / gridSize);
+      const player = currentPlayer === "user1" ? 1 : 2;
+      const move = {
+      player: user,
+      row: row,
+      column: column,
+     };
+     sendMoveToServer(move);
+      });
+  
+ 
+  function sendMoveToServer(move) {
+  console.log("Sending move to server:", move);
+  socket.send(JSON.stringify(move));
+
+socket.addEventListener('message', event => {
+  const line = JSON.parse(event.data);
+  const data = line.content.trim().split('\n'); 
+  const board = []; 
+for (let i = 0; i < 10; i++) { 
+  board[i] = []; 
+  for (let j = 0; j < 10; j++) {
+    board[i][j] = parseInt(data[i * 10 + j]);  
+  }
+  const canvas = document.querySelector('#chessborad');
+const ctx = canvas.getContext('2d');
+const gridSize = 50; 
+for (let i = 0; i < 10; i++) { 
+  for (let j = 0; j < 10; j++) {
+    const x = j * gridSize; 
+    const y = i * gridSize;
+    if (board[i][j] === 1) { 
+      ctx.fillStyle = 'black'; 
+      ctx.beginPath(); 
+      ctx.arc(x + gridSize / 2, y + gridSize / 2, gridSize / 2 - 5, 0, 2 * Math.PI); // 绘制圆形棋子
+      ctx.fill(); 
+    } else if (board[i][j] === 2) { 
+      ctx.fillStyle = 'white'; 
+      ctx.beginPath(); 
+      ctx.arc(x + gridSize / 2, y + gridSize / 2, gridSize / 2 - 5, 0, 2 * Math.PI); // 绘制圆形棋子
+      ctx.fill(); 
+      ctx.strokeStyle = 'black'; 
+      ctx.stroke(); 
+    } else { 
+      ctx.fillStyle =   'rgba(0, 0, 0, 0)'; 
+      ctx.fillRect(x, y, gridSize, gridSize); 
+      
+    }
+  }
+}
+}
+});
+}
+    })
+  })
+ 
+  const Div = document.createElement('div');
+    Div.className = 'my-div';
+    Div.setAttribute('id', 'content');
+    const Input = document.createElement('input');
+    Input.type = 'text';
+    Input.className = 'my-input';
+        const Button = document.createElement('button');
+    Button.innerHTML = '发送聊天消息';
+    Button.type = 'button';
+    Button.className = 'my-button';
+    Button.id = "send";
+    
+    Div.appendChild(Input);
+    Div.appendChild(Button);
+    const div = document.getElementById('app');
+div.appendChild(Div);
+send.addEventListener('click', function() {
+  const chatInput = document.querySelector('.my-input');
+const sendButton = document.querySelector('.my-button');
+function sendChatMessage() {
+  const message = chatInput.value.trim();
+  if (message) {
+    const data = {
+      sender: 'user1',
+      content: 'chatInput'
+    };
+    websocket.send(JSON.stringify(data));
+   
+  }
+}
+socket.addEventListener('message', event => {
+  console.log(event.data)
+  const data = JSON.parse(event.data);
+  renderChatMessage(data.content);
+  const chatMessages = document.getElementById('content');
+ function renderChatMessage(message) {
+  const chatMessage = document.createElement('p');
+  chatMessage.textContent = message;
+
+  chatMessages.appendChild(chatMessage);
+  
+}
+}); 
+});
+    
+});
+
+
+   
+
+      });
+
+</script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+</body>
+</html>

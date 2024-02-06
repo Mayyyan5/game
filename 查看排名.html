@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        
+        .rank-item {
+          margin-bottom: 10px;
+        }
+    
+        .username {
+          font-weight: bold;
+        }
+    
+        .score {
+          color: red;
+        }
+        .btn{
+           
+            margin-top: 20px;
+            height: 22px;
+            width: 30%;
+            
+        }
+      </style>
+</head>
+<body>
+    <button type="button" class="btn" id="backButton">返回</button>
+    <script>
+        document.getElementById('backButton').addEventListener('click', function() {
+          window.history.back();
+        });
+    </script>
+    <script>
+        const passwordToken = localStorage.getItem('passwordToken');
+   const smsToken = localStorage.getItem('smsToken');
+   let selectedToken;
+   let selectedLoginMethod
+   if (passwordToken) {
+     selectedToken = passwordToken;
+     selectedLoginMethod = 'password';
+   } else if (smsToken) {
+     selectedToken = smsToken;
+     selectedLoginMethod = 'sms';
+   }
+   
+   axios.get('http://47.109.84.129:8080/user/rank', {
+     headers: {
+       'Authorization': `Bearer ${selectedToken}`
+     }
+   })
+      </script>
+    <h1>游戏排行榜</h1>
+  <div id="rankContainer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // 发送请求获取排行数据
+    axios.get('http://localhost:8080/user/rank')
+      .then(function (response) {
+        const rankData = response.data.rank;
+
+        // 渲染排行信息到页面
+        renderRank(rankData);
+      })
+      .catch(function (error) {
+        // 请求失败的处理逻辑
+      });
+
+    function renderRank(rankData) {
+      const rankContainer = document.getElementById('rankContainer');
+
+      // 遍历排行信息并渲染到页面
+      rankData.forEach(function (item) {
+        const rankItem = document.createElement('div');
+        rankItem.classList.add('rank-item');
+
+        const username = document.createElement('span');
+        username.classList.add('username');
+        username.textContent = item.username;
+
+        const score = document.createElement('span');
+        score.classList.add('score');
+        score.textContent = item.score || 'N/A';
+
+        rankItem.appendChild(username);
+        rankItem.appendChild(score);
+
+        rankContainer.appendChild(rankItem);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container{
+            width: 80%;
+            height: 700px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.8);
+            display: flex;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            background-image: url("2.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            
+        }
+        .name{
+            height: 22px;
+            padding: 0;
+            border: none;
+            background: none;
+            outline: none;
+            border-bottom: 1px solid black;
+            width: 60%;
+            font-size: 18px;
+            margin-top: 150px;
+            margin-left: 10%;
+        }
+        .phonenumber{
+            height: 22px;
+            padding: 0;
+            border: none;
+            background: none;
+            outline: none;
+            border-bottom: 1px solid black;
+            width: 60%;
+            font-size: 18px;
+            margin-top: 150px;
+            margin-left: 10%;
+        }
+        .input_play{
+            height: 22px;
+            padding: 0;
+            border: none;
+            background: none;
+            outline: none;
+            border-bottom: 1px solid black;
+            width: 60%;
+            font-size: 18px;
+            margin-top: 150px;
+            margin-left: 10%;
+        }
+        .btn{
+            margin-top: 20px;
+            height: 44px;
+            width: 100%;
+            margin-left: 8%;
+            
+        }
+        h1{
+            margin-top: 115px;
+            text-align: center;
+            padding-top: 45px;
+            
+            
+        }
+        
+       
+    </style>
+
+</head>
+<body>
+    <h1>个人用户中心</h1>
+    <div class="container">
+       
+        <form class="login-form">
+            <input type="text" id="phone" class="name" placeholder="昵称">
+            <input type="text" id="code" class="phonenumber" placeholder="电话号码">
+            <input type="text" class="input_play" placeholder="游戏值">
+            <button type="button" class="btn" id="backButton">返回</button>
+            <button type="button" class="btn" id="overButton">退出登录</button>
+        
+        </form>
+        
+
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+         const passwordToken = localStorage.getItem('passwordToken');
+const smsToken = localStorage.getItem('smsToken');
+let selectedToken;
+let selectedLoginMethod
+if (passwordToken) {
+  selectedToken = passwordToken;
+  selectedLoginMethod = 'password';
+} else if (smsToken) {
+  selectedToken = smsToken;
+  selectedLoginMethod = 'sms';
+}
+
+axios.get('ws://localhost:8080/game/createRoom', {
+  headers: {
+    'Authorization': `Bearer ${selectedToken}`
+  }
+})
+    </script>
+    
+    <script src="auth.js"></script>
+    
+     <script>
+        // 为返回按钮添加点击事件
+        document.getElementById('backButton').addEventListener('click', function() {
+          window.history.back();
+        });
+        document.getElementById('overButton').addEventListener('click', function() {
+          window.location.href='注册.html'
+        });
+      </script>
+    
+    
+</body>
+</html>

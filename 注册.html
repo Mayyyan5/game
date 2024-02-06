@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+          background: linear-gradient(to right,rgb(29, 27, 27),#808080);
+          width: 100vw;
+          height: 100vh;
+          margin: 0;
+        }
+        .box{
+            width: 60%;
+            height: 450px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.8);
+            display: flex;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        
+            
+        }
+        .left{
+            width: 50%;
+        }
+        .left>img{
+            display:block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .right{
+            width: 50%;
+            height: 100%;
+            background-color: #fff;
+            box-sizing: border-box;
+            padding:0 20px;
+        }
+        h1{
+            text-align: center;
+            padding-top: 45px;
+            margin-top: 0;
+        }
+        .input_pass{
+            height: 44px;
+            padding: 0;
+            padding-left: 5px;
+            border: none;
+            background: none;
+            outline: none;
+            border-bottom: 3px solid black;
+            width: 100%;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .input_text{
+            height: 44px;
+            padding: 0;
+            padding-left: 5px;
+            border: none;
+            background: none;
+            outline: none;
+            border-bottom: 3px solid black;
+            width: 100%;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .forgetPassword{
+            margin-top: 25px;
+            color: #9C3493;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            height: 45px;
+            width: 80%;
+            font-size: 18px;
+            display: block;
+            margin: auto;
+            margin-top: 30px;
+
+        }
+        .log{
+            margin-top: 35px;
+            color: royalblue;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            height: 45px;
+            width: 80%;
+            font-size: 18px;
+            display: block;
+            margin: auto;
+            margin-right: 100%;
+            
+        }
+        .btn{
+            margin-top: 40px;
+            height: 44px;
+            width: 100%;
+
+        }
+        @media screen and(min-width:960px) {
+            .box{
+                max-width: 950px;
+                min-width: 750px;
+            }
+            
+        }
+        @media screen and(max-width:960px) {
+            .box{
+                display: block;
+                height: auto;
+            }
+            .left,.right{
+                width: 100%;
+                margin-top: 0;
+            }
+            left{
+                height: 200px;
+            }
+            .right{
+                padding: 2vw 2vw;
+            }
+            h1{
+                padding-top: 0;
+                margin-bottom: 1vw;
+            }
+            .inputItem,.forgetPassword,.btn{
+                margin-top: 2vw;
+            }
+        }
+
+        @media screen and(max-width:750px){
+            .box{
+                width: 85%;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="left">
+            <img src="1.jpg" alt="">
+        </div>
+        <div class="right">
+            <h1>账号密码登录</h1>
+            <form>
+                <input type="text" class="input_text" placeholder="账户名">
+                <input type="password" class="input_pass" placeholder="输入密码">
+                <a href="#" class="forfet password">验证码注册登录</a>
+                <a href="register.html" class="log">已有账号去登录</a>
+                <button type="button" class="btn">注册</button>
+            </form>
+            
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.querySelector('.btn').addEventListener('click', () =>{
+            const username = document.querySelector('.input_text').value
+        const password = document.querySelector('.input_pass').value
+        axios({
+            url:'http://47.109.84.129:8080/user/register/byPassword',
+            method:'POST',
+            data: {
+                username: username,
+                password: password
+            }
+        }).then(result => {
+            console.log(result);
+            console.log(result.data.message)
+            alert('注册成功')
+            Window.location.href('register.html')
+        }).catch(error => {
+           
+        })
+        
+        
+        
+    })
+        
+        
+
+    </script>
+</body>
+</html>
